@@ -1,10 +1,14 @@
-const express = require('express')
+const express = require('express');
+const cors = require('cors');
+const db = require('../database/connection');
 
 class Server {
 
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+
+    this.dbConnections();
 
     // Middlewares
     this.middlewares();
@@ -13,27 +17,31 @@ class Server {
     this.routes();
   }
 
+  async dbConnections() {
+    try {
+      
+      await db.authenticate();
+      console.log('Database online')
+
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   middlewares() {
+
+    // CORS
+    this.app.use(cors());
+
+    // Lectura y Parseo del body
+    this.app.use(express.json());
+
     // Directorio publico
     this.app.use( express.static('public') )
   }
 
   routes() {
-    this.app.get('/api', (req, res) => {
-      res.json('get API')
-    })
-
-    this.app.put('/api', (req, res) => {
-      res.json('put API')
-    })
-
-    this.app.post('/api', (req, res) => {
-      res.json('post API')
-    })
-
-    this.app.delete('/api', (req, res) => {
-      res.json('delete API')
-    })
+    this.app.use('/api/unidades', require('../routes/unidades'));
   }
 
   listen() {
