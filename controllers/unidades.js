@@ -24,19 +24,45 @@ const getUsuario = async (req = request, res = response) => {
 
 }
 
-const postUsuarios = (req, res = response) => {
+const postUsuarios = async (req, res = response) => {
   const body = req.body;
 
-  res.status(201).json({
-    message: 'post API - controlador',
-    body
-  })
+  try {
+
+    const usuario = new Unidad(body);
+    await usuario.save();
+    res.status(201).json(usuario)
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Error en el server',
+    })
+  }
+
+  
 }
 
-const putUsuarios = (req = request, res = response) => {
+const putUsuarios = async (req = request, res = response) => {
 
   const id = req.params.id;
-  const query = req.query;
+  const { body } = req;
+
+  try {
+
+    const unidad = await Unidad.findByPk(id);
+    if(!unidad) {
+      return res.status(404).json({
+        message: "No existe el usuario con el id " + id,
+      })
+    }
+
+    await unidad.update(body);
+
+    res.json(unidad);
+
+  } catch (error) {
+    
+  }
 
   res.json({
     message: 'post API - controlador',
