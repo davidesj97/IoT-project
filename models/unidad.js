@@ -3,11 +3,11 @@ const db = require('../database/connection');
 
 const Unidad = db.define('unidad', {
   unidad_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(45),
     primaryKey: true,
   },
   ruta: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(45),
   }
 })
 

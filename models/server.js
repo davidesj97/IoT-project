@@ -21,6 +21,9 @@ class Server {
     try {
       
       await db.authenticate();
+
+      await db.sync();
+
       console.log('Database online')
 
     } catch (error) {

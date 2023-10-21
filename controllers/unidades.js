@@ -1,7 +1,27 @@
 const {response, request} = require('express');
+const Unidad = require('../models/unidad');
 
-const getUsuarios = (req, res = response) => {
-  res.json('get API - controlador')
+const getUsuarios = async (req, res = response) => {
+
+  const unidades = await Unidad.findAll();
+
+  res.json({unidades});
+}
+
+const getUsuario = async (req = request, res = response) => {
+
+  const { id } = req.params;
+
+  const unidad = await Unidad.findByPk(id);
+
+  if(unidad) {
+    res.json(unidad);
+  } else {
+    res.status(404).json({
+      message: `No existe una unidad con el id ${id}`
+    })
+  }
+
 }
 
 const postUsuarios = (req, res = response) => {
@@ -31,6 +51,7 @@ const deleteUsuarios = (req, res = response) => {
 
 module.exports = {
   getUsuarios,
+  getUsuario,
   postUsuarios,
   putUsuarios,
   deleteUsuarios,
