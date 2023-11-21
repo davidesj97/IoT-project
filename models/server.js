@@ -1,14 +1,22 @@
 const express = require('express');
+const mqtt = require('mqtt');
 const cors = require('cors');
 const db = require('../database/connection');
+
+const { postStation, publicar } = require('../mqtt/stations');
 
 class Server {
 
   constructor() {
     this.app = express();
+    this.client = mqtt.connect('mqtt://192.168.33.194');
     this.port = process.env.PORT || 3000;
+    this.postStation = postStation;
+    this.publicar = publicar;
 
     this.dbConnections();
+
+    this.mqttConection();
 
     // Middlewares
     this.middlewares();
@@ -29,6 +37,36 @@ class Server {
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  mqttConection() {
+    this.client.on('connect', () => {
+      console.log('Conexión establecida con el broker MQTT');
+
+    });
+
+    // Suscribirse a un tema al conectar con el broker
+    this.client.subscribe('/home/sensors/stations', (err) => {
+      if (!err) {
+        console.log('Suscripción exitosa al tema');
+      } else {
+        console.error('Error al suscribirse al tema:', err);
+      }
+    });
+
+    this.client.subscribe('/home/sensors/unidades', (err) => {
+      if (!err) {
+        console.log('Suscripción exitosa al tema');
+      } else {
+        console.error('Error al suscribirse al tema:', err);
+      }
+    });
+
+    this.client.on('message', (topic, message) => {
+      if(topic == '/home/sensors/stations') {
+        this.postStation(topic, message);
+      }
+    });
   }
 
   middlewares() {
