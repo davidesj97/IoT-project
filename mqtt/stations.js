@@ -1,6 +1,6 @@
 const mqtt = require('mqtt');
 const Estacion = require('../models/station');
-const client = mqtt.connect('mqtt://192.168.33.194');
+const client = mqtt.connect(process.env.BROKER_URL);
 
 const postStation = async (topic, message) => {
   console.log(`Mensaje recibido en el tema ${topic}: ${message.toString()}`);

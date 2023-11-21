@@ -9,14 +9,14 @@ class Server {
 
   constructor() {
     this.app = express();
-    this.client = mqtt.connect('mqtt://192.168.33.194');
+    // this.client = mqtt.connect(process.env.BROKER_URL);
     this.port = process.env.PORT || 3000;
-    this.postStation = postStation;
-    this.publicar = publicar;
+    // this.postStation = postStation;
+    // this.publicar = publicar;
 
     this.dbConnections();
 
-    this.mqttConection();
+    // this.mqttConection();
 
     // Middlewares
     this.middlewares();
