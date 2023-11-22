@@ -1,10 +1,9 @@
-
 const {Router} = require('express');
-const { getUnidades } = require('../http/unidades');
+const { getStations } = require('../http/stations');
 
 const router = Router();
 
-router.get('/', getUnidades)
+router.get('/', getStations)
 
 
 module.exports = router;

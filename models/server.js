@@ -3,20 +3,21 @@ const mqtt = require('mqtt');
 const cors = require('cors');
 const db = require('../database/connection');
 
-const { postStation, publicar } = require('../mqtt/stations');
+const station = require('../mqtt/stations');
+const record = require('../mqtt/records');
 
 class Server {
 
   constructor() {
     this.app = express();
-    // this.client = mqtt.connect(process.env.BROKER_URL);
+    this.client = mqtt.connect(process.env.BROKER_URL);
     this.port = process.env.PORT || 3000;
-    // this.postStation = postStation;
-    // this.publicar = publicar;
+    this.station = station;
+    this.record = record;
 
     this.dbConnections();
 
-    // this.mqttConection();
+    this.mqttConection();
 
     // Middlewares
     this.middlewares();
@@ -62,9 +63,21 @@ class Server {
       }
     });
 
+    this.client.subscribe('/home/sensors/records', (err) => {
+      if (!err) {
+        console.log('Suscripción exitosa al tema');
+      } else {
+        console.error('Error al suscribirse al tema:', err);
+      }
+    });
+
     this.client.on('message', (topic, message) => {
       if(topic == '/home/sensors/stations') {
-        this.postStation(topic, message);
+        this.station.postStation(topic, message);
+      }
+
+      if(topic == '/home/sensors/records') {
+        this.record.postRecord(topic, message);
       }
     });
   }
@@ -83,6 +96,8 @@ class Server {
 
   routes() {
     this.app.use('/api/unidades', require('../routes/unidades'));
+    this.app.use('/api/estaciones', require('../routes/stations'));
+    this.app.use('/api/registros', require('../routes/records'));
   }
 
   listen() {

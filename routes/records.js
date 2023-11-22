@@ -1,10 +1,8 @@
-
 const {Router} = require('express');
-const { getUnidades } = require('../http/unidades');
+const { getRecords } = require('../http/records');
 
 const router = Router();
 
-router.get('/', getUnidades)
-
+router.get('/', getRecords)
 
 module.exports = router;

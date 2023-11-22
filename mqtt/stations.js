@@ -6,13 +6,12 @@ const postStation = async (topic, message) => {
   console.log(`Mensaje recibido en el tema ${topic}: ${message.toString()}`);
   const parse = message.toString();
   const body = JSON.parse(parse);
-  console.log(body);
-  // try {
-  //   const estacion = new Estacion(body);
-  //   await estacion.save();
-  // } catch (error) {
-  //   console.log(error);
-  // } 
+  try {
+    const estacion = new Estacion(body);
+    await estacion.save();
+  } catch (error) {
+    console.log(error);
+  } 
 }
 
 const publicar = () => {

@@ -5,7 +5,7 @@ const Station = require('./station'); // Importa el modelo de la tabla 'stations
 
 const Record = db.define('registro', {
   registro_id: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.INTEGER,
     primaryKey: true
   },
   fecha_llegada: {
