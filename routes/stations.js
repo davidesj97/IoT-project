@@ -1,9 +1,10 @@
 const {Router} = require('express');
-const { getStations } = require('../http/stations');
+const { getStations, getStation } = require('../http/stations');
 
 const router = Router();
 
 router.get('/', getStations)
+router.get('/:id', getStation)
 
 
 module.exports = router;

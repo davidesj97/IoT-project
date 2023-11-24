@@ -5,6 +5,7 @@ const db = require('../database/connection');
 
 const station = require('../mqtt/stations');
 const record = require('../mqtt/records');
+const unidad = require('../mqtt/unidades');
 
 class Server {
 
@@ -13,6 +14,7 @@ class Server {
     this.client = mqtt.connect(process.env.BROKER_URL);
     this.port = process.env.PORT || 3000;
     this.station = station;
+    this.unidad = unidad;
     this.record = record;
 
     this.dbConnections();
@@ -74,6 +76,10 @@ class Server {
     this.client.on('message', (topic, message) => {
       if(topic == '/home/sensors/stations') {
         this.station.postStation(topic, message);
+      }
+
+      if(topic == '/home/sensors/unidades') {
+        this.unidad.postUnidad(topic, message);
       }
 
       if(topic == '/home/sensors/records') {
